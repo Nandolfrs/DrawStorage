@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<title>DrawStorage</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="color/css/colorpicker.css" type="text/css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="color/css/layout.css" />
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css"/>
+		<link rel="stylesheet" href="themes/theme.css" />
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"> </script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.js"> </script>
+		<script type="text/javascript" src="js/funcoes.js"> </script>
+		<script type="text/javascript" src="color/js/colorpicker.js"></script>
+		<script type="text/javascript" src="color/js/eye.js"></script>
+		<script type="text/javascript" src="color/js/utils.js"></script>
+		<script type="text/javascript" src="color/js/layout.js?ver=1.0.2"></script>
+		<style type="text/css">
+			#index,#info{
+				width:100%;
+				height:100%;
+			}
+			#func,#sobre{
+				width:100%;
+				height:100%; 
+				text-align:left;
+			}
+			#barra{
+				width: 100%; 
+				margin-top: 10px;
+			}
+			img {
+			  margin-left:10px;
+			  margin-right:10px;
+			  margin-top: 10px;
+			}
+			#canvasDraw, #canvasDraw:active{
+				cursor:crosshair;
+			} 	
+			#colorpickerHolder{
+				margin-top:15px;
+			}			
+		</style>
+
+	</head>
+
+	<body onload="init()">
+
+		<div id="index" data-role="page">
+
+			<div data-role="header" data-theme="e">
+				<h1>DrawStorage</h1>
+				<div data-role="controlgroup" data-type="horizontal" class="ui-btn-right">
+					<a href="#" onclick="save()" data-role="button" data-iconpos="notext" data-icon="check">Salvar</a>
+					<a href="#" onclick="load()" data-role="button" data-iconpos="notext" data-icon="forward">Carregar</a>
+					<a href="#" onclick="clearC()" data-role="button" data-iconpos="notext" data-icon="delete">Limpar</a>
+				</div>
+				<div data-role="controlgroup" data-type="horizontal" class="ui-btn-left">
+					<a href="#info" data-icon="info" data-role="button" data-iconpos="notext">Informações</a>
+				</div>
+			</div>
+
+			<div data-role="content">			 
+				<canvas id="canvasDraw"  width="350px" height="350px" style="border:2px solid #000;"> 
+					<p>Seu navegador não tem suporte ao canvas.</p> 
+				    	<p>Navegadores suportados:                     
+				    	<a href="http://www.google.com/chrome">Chrome</a>,                     
+				    	<a href="http://www.mozilla.com">Firefox</a>, 
+				    	<a href="http://www.opera.com">Opera</a>, 
+					<a href="http://www.apple.com/safari">Safari</a>.</p> 
+				</canvas>
+				 <div id="colorpickerHolder"></div>
+			</div>
+
+			<div data-role="footer" data-theme="f" data-position="fixed" data-tap-toggle="false">
+				<div data-role="navbar" id="barra">
+					<ul>
+						<li><a id="pencil" onclick="tools(this)" href="#" data-theme="f" title="Lápis" class="ui-btn-active ui-state-persist"><img src="themes/images/icon_pencil.png"/></a></li>
+						<li><a id="square" onclick="tools(this)" href="#" data-theme="f" title="Quadrado"><img src="themes/images/icon_square.png"/></a></li>
+						<li><a id="circle" onclick="tools(this)" href="#" data-theme="f" title="Circulo"><img src="themes/images/icon_circle.png"/></a></li>
+						<li><a id="star" onclick="tools(this)" href="#" data-theme="f" title="Estrela"><img src="themes/images/icon_star.png"/></a></li>
+						<li><a id="erase" onclick="tools(this)" href="#" data-theme="f" title="Borracha"><img src="themes/images/icon_eraser.png"/></a></li>
+					</ul>
+				</div>		
+				<div data-role="navbar" id="barra">
+					<ul>
+						<li><a id="1px" onclick="line(this)" href="#" title="Tamanho 1x" data-theme="f">1x</a></li>
+						<li><a id="2px" onclick="line(this)" href="#" title="Tamanho 2x" data-theme="f">2x</a></li>
+						<li><a id="3px" onclick="line(this)" href="#" title="Tamanho 3x" data-theme="f" class="ui-btn-active ui-state-persist">3x</a></li>
+						<li><a id="4px" onclick="line(this)" href="#" title="Tamanho 4x" data-theme="f">4x</a></li>
+						<li><a id="5px" onclick="line(this)" href="#" title="Tamanho 5x" data-theme="f">5x</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	
+		<div id="info" data-role="page" data-dom-cache="true" data-theme="f">
+
+			<div data-role="header" data-position="fixed" data-theme="f">
+				<h1>DrawStorage</h1>
+				<a href="#index" data-rel="back" data-icon="home" data-iconpos="notext">Home</a>
+			</div>
+
+			<div data-role="content" data-theme="f">
+				<h4 align="center">Informações do DrawStorage</h4>
+				<div class="content-primary" data-theme="f">
+					<ul data-role="listview" data-filter="true" data-theme="f">
+						<li><a href="#func" data-rel="dialog" data-transition="pop">Funcionalidades</a></li>
+						<li><a href="#sobre" data-rel="dialog" data-transition="pop">Sobre</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="func" data-role="page" data-dom-cache="true">
+
+			<div data-role="header" data-position="fixed" data-theme="f">
+				<h1>Funcionalidades</h1>
+			</div>
+			<div data-role="content">
+				<ul>
+					<li><b>Desenhar: </b>Para desenhar poderá utilizar o lápis, e ainda, utilizar formas já definidas. Ex:  Estrela, Quadrado ou Círculo.</li>
+					<li><b>Salvar: </b>Irá armazenar seu desenho no cache do navegador.</li>
+					<li><b>Carregar: </b>Irá carregar o último desenho salvo.</li>
+					<li><b>Limpar: </b>Irá limpar o conteúdo da área de desenho.</li>
+					<li><b>Cores: </b>Poderá escolher entre várias cores para criar seu desenho.</li>
+					<li><b>Tamanhos: </b>Poderá escolher entre 5 (cinco) tamanhos diferentes.</li>
+				</ul>
+			</div>
+
+		</div>
+
+		<div id="sobre" data-role="page" data-dom-cache="true">
+
+			<div data-role="header" data-position="fixed" data-theme="f">
+				<h1>Sobre</h1>
+			</div>
+			<div data-role="content">
+				IF Sudeste de Minas Gerais - Campus Barbacena <br />
+				Programação para Dispositivos Móveis e Sem Fio <br />
+				Professor Rafael Alencar <br />
+				Trabalho Prático HTML5 - JQueryMobile <br />
+				Desenvolvido por: <br />
+				Luiz Fernando Rosa da Silva<br />
+				Otávio Augusto Machado Batista <br />
+				1º de Fevereiro de 2013
+			</div>
+
+		</div>
+
+	</body>
+</html>

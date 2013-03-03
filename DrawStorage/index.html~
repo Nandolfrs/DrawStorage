@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>DrawStorage</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css"/>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"> </script>
+		<script type="text/javascript" src="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.js"> </script>
+		<link rel="stylesheet" href="themes/theme.css" />
+		<style type="text/css">
+		
+			body {overflow:hidden;
+			      text-align:center;}
+			#pagina-mobile{width:100%;height:100%}
+			#conteudo-mobile{padding:0}
+			img {
+			  margin-left:10px;
+			  margin-right:10px;
+			  margin-top: 10px;
+			}
+			
+		</style>
+		<script type="text/javascript">
+			
+			//Variáveis Globais
+			var canvas, ctx, flag=false, prevX=0, currX=0, prevY=0, currY=0, dot_flag=false;
+			var cor="black", linha=2;
+			
+			//Função inicial
+			function init()
+			{
+				//Instanciando Canvas
+				canvas = document.getElementById('canvasDraw');
+				ctx = canvas.getContext("2d");
+
+				//Variáveis para armazenar o tamanho do canvas
+				w = canvas.width;
+				h = canvas.height;
+
+				//Alterando cor do fundo do canvas
+				ctx.fillStyle = "#FFF";
+				ctx.fillRect(0,0,w,h);
+
+				//Funções acionadas com o click do mouse
+				canvas.addEventListener("mousemove",function(e){ findxy('move',e)  },false);
+				canvas.addEventListener("mousedown",function(e){ findxy('down',e)  },false);
+				canvas.addEventListener("mouseup",function(e){ findxy('up',e)  },false);
+				canvas.addEventListener("mouseout",function(e){ findxy('out',e)  },false);
+			} 
+
+			//Função para definir cor
+			function color(obj)
+			{
+				switch(obj.id)
+				{
+					case "green": 
+					  cor="green";
+					  break;
+					case "blue": 
+					  cor="blue";
+					  break;
+					case "red": 
+					  cor="red";
+					  break;
+					case "yellow": 
+					  cor="yellow";
+					  break;
+					case "black": 
+					  cor="black";
+					  break;
+					case "brown": 
+					  cor="brown";
+					  break;
+					case "orange": 
+					  cor="orange";
+					  break;
+					case "pink": 
+					  cor="#f09";
+					  break;
+					case "purple": 
+					  cor="purple";
+					  break;
+					case "gray":
+					  cor = "gray";
+					  break;
+					case "white": 
+					  cor = "white"; 
+					  linha=15; 
+					  break;
+				}
+			}
+
+			//Função para definir espessura da linha
+            function line(obj) {
+			    if (cor != "white") 
+				    switch(obj.id)
+				    {
+					    case "1px": 
+					      linha=1;
+					      break;
+					    case "2px": 
+					      linha=3;
+					      break;
+					    case "3px": 
+					      linha=6;
+					      break;
+					    case "5px": 
+					      linha=8;
+					      break;
+					    case "10px": 
+					      linha=10;
+					      break;
+				    }
+			}
+
+			//Função que desenha no canvas
+			function draw()
+			{
+				ctx.beginPath();
+				ctx.moveTo(prevX,prevY);
+				ctx.lineTo(currX,currY);
+				ctx.strokeStyle=cor;
+				ctx.lineWidth=linha;
+				ctx.stroke();
+				ctx.closePath();
+			}
+
+			//Função do botão limpar
+			function erase()
+			{
+				ctx.clearRect(0,0,w,h);
+				ctx.fillStyle = "#fff";
+				ctx.fillRect(0,0,w,h);
+			}
+
+			//Função do botão salvar #WebStorage
+			function save()
+			{
+				localStorage.canvasImage = canvas.toDataURL();
+			 }
+
+			//Função do botão carregar #WebStorage
+			function load()
+			{
+				var img = new Image();
+				img.src = localStorage.canvasImage;
+				img.onload = function() {
+					ctx.drawImage(img, 0, 0, img.width, img.height);
+				};
+			}
+
+			//Função que localiza a posição do mouse
+			//para desenhar no canvas
+			function findxy(res,e)
+			{
+
+				if(res=='down')
+			    {   prevX=currX;prevY=currY;
+			        currX=e.clientX-canvas.offsetLeft;
+			        currY=e.clientY-canvas.offsetTop; 
+
+			        flag=true;
+			        dot_flag=true;
+			        if(dot_flag)
+			        {
+					    ctx.beginPath();
+					    ctx.fillStyle=cor;
+					    ctx.fillRect(currX,currY,2,2);
+					    ctx.closePath();
+					    dot_flag=false;
+			        }
+			    }
+				if(res=='up'||res=="out")
+				{
+				    flag=false; 
+				} 
+				if(res=='move')
+				{
+
+				    if(flag)
+				    {
+						prevX=currX;
+						prevY=currY;
+						currX=e.clientX-canvas.offsetLeft;
+						currY=e.clientY-canvas.offsetTop;
+						draw();
+				    }
+				}
+			}
+
+		</script>
+
+	</head>
+
+	<body onload="init()">
+
+		<div id="pagina-mobile" data-role="page">
+
+			<div data-role="header" data-theme="e">
+				<h1>DrawStorage</h1>
+				<a href="#" onclick="save()" data-icon="check" data-iconpos="notext">Salvar</a>
+				<a href="#" onclick="load()" data-icon="forward" data-iconpos="notext">Carregar</a>
+			</div>
+
+			<div data-role="content">
+			 
+				<canvas id="canvasDraw"  width="300px" height="300px" style="border:2px solid #000;"> 
+					<p>Seu navegador não tem suporte ao canvas.</p> 
+				    	<p>Navegadores suportados:                     
+				    	<a href="http://www.google.com/chrome">Chrome</a>,                     
+				    	<a href="http://www.mozilla.com">Firefox</a>, 
+				    	<a href="http://www.opera.com">Opera</a>, 
+					<a href="http://www.apple.com/safari">Safari</a>.</p> 
+				</canvas>
+
+				<br>
+				<a onclick="erase()" href="#" data-inline="true" title="Limpar"><img src="images/clear.png" /></a>
+				<a onclick="save()" href="#" data-inline="true" title="Salvar"><img src="images/save.png" /></a>
+				<a onclick="load()" href="#" data-inline="true" title="Carregar"><img src="images/load.png" /></a>
+				<a onclick="color(this)" href="#" id="white" data-inline="true" title="Borracha"><img src="images/erase.png" /></a>
+				<br><br>
+			<div>
+				 <data-role="content">
+				 <a data-role="button" onclick="color(this)" href="#" id="black" data-theme="a" data-inline="true"></a>
+				 <a data-role="button" onclick="color(this)" href="#" id="green" data-theme="b" data-inline="true"></a>
+				 <a data-role="button" onclick="color(this)" href="#" id="blue" data-theme="c" data-inline="true"></a>
+				 <a data-role="button" onclick="color(this)" href="#" id="red" data-theme="d" data-inline="true"></a> 
+				 <a data-role="button" onclick="color(this)" href="#" id="gray" data-theme="f" data-inline="true"></a>
+				 <br>
+				 <a data-role="button" onclick="color(this)" href="#" id="pink" data-theme="g" data-inline="true"></a>
+				 <a data-role="button" onclick="color(this)" href="#" id="brown" data-theme="h" data-inline="true"></a>
+				 <a data-role="button" onclick="color(this)" href="#" id="yellow" data-theme="i" data-inline="true"></a> 
+				 <a data-role="button" onclick="color(this)" href="#" id="orange" data-theme="j" data-inline="true"></a>
+				 <a data-role="button" onclick="color(this)" href="#" id="purple" data-theme="k" data-inline="true"></a>
+				</ul>
+			</div>
+			<div>        
+				<data-role="content">
+				<a id="1px" onclick="line(this)" href="#" data-inline="true" data-iconpos="notext">Espessura (px)<img src="images/um.png" /></a>
+				<a id="2px" onclick="line(this)" href="#" data-inline="true" title="Espessura (px)"><img src="images/dois.png" /></a>
+				<a id="3px" onclick="line(this)" href="#" data-inline="true" title="Espessura (px)"><img src="images/tres.png" /></a>
+				<a id="5px" onclick="line(this)" href="#" data-inline="true" title="Espessura (px)"><img src="images/quatro.png" /></a>
+				<a id="10px" onclick="line(this)" href="#" data-inline="true" title="Espessura (px)"><img src="images/cinco.png" /></a>
+
+			</div>
+		</div>
+
+		<div data-role="footer" data-theme="f" data-position="fixed" data-tap-toggle="false">
+			<p>&copy; 2013 IF Sudeste - Barbacena - JQueryMobile</p>
+		</div>
+	</div>
+
+	</body>
+</html>
