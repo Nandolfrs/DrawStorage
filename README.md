@@ -8,7 +8,7 @@ DrawStorage
 Funcionamento
 -------------
 
-A aplicação DrawStorage permite fazer desenhos, foi feita utilizando jQuery Mobile e html5. Para a área de desenho foi utilizada a api Canvas, e a api WebStorage foi utilizada para salvar um desenho.
+A aplicação DrawStorage permite fazer desenhos e salvá-los no cache do navegador. É possível utilizar um pincel, ou algumas formas pré-estabelecidas para criar os desenhos. Ela foi feita utilizando jQuery Mobile e as api Canvas e WebStorage do html5.
 
 ***OBS:*** Funcionando corretamento no Google Chrome.
 
