@@ -13,4 +13,4 @@ A aplicação foi feita em jQuery Mobile e html5 utilizando as api's do Canvas e
 Screenshots
 -------------
 
-![Alt text](/Screenshot/to/sample1.png)
+![Alt text](/Screenshot/sample1.png)
